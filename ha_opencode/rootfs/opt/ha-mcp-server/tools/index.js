@@ -758,3 +758,148 @@ export const TOOLS = [
     },
   },
   ];
+
+// ============================================================================
+// MOBILE AND CLIENT-SIDE TOOLS
+// ============================================================================
+
+// --- Mobile Detection and Info ---
+{
+  name: "is_mobile_client",
+  title: "Check Mobile Client",
+  description: "Detect if the MCP client is running on a mobile device. Returns true for Android, iOS, and other mobile platforms.",
+  annotations: {
+    title: "is_mobile_client",
+    readOnly: true,
+    idempotent: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {},
+  },
+  execute: async () => {
+    const userAgent = process.env.MCP_USER_AGENT || "desktop";
+    const isMobile = require("../lib/mobile-features").isMobileClient(userAgent);
+    return {
+      is_mobile: isMobile,
+      user_agent: userAgent,
+      platform: isMobile ? "mobile" : "desktop",
+    };
+  },
+},
+{
+  name: "get_device_info",
+  title: "Get Device Information",
+  description: "Retrieve detailed information about the current device and environment, including platform, architecture, and Home Assistant version.",
+  annotations: {
+    title: "get_device_info",
+    readOnly: true,
+    idempotent: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {},
+  },
+  execute: async () => {
+    const info = require("../lib/device-info").getDeviceInfo();
+    return {
+      platform: info.platform,
+      architecture: info.arch,
+      "node_version": info.nodeVersion,
+      "home_assistant_version": info.homeAssistantVersion,
+      "supervisor_version": info.supervisorVersion,
+      "addon_version": info.addonVersion,
+      "uptime_seconds": Math.floor(info.uptime),
+    };
+  },
+},
+{
+  name: "get_ha_dashboard_url",
+  title: "Get Home Assistant Dashboard URL",
+  description: "Retrieve the current Home Assistant dashboard URL. Useful for mobile clients to quickly access the dashboard from the MCP server.",
+  annotations: {
+    title: "get_ha_dashboard_url",
+    readOnly: true,
+    idempotent: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {
+      include_port: {
+        type: "boolean",
+        description: "Include port number in URL (default: false)",
+        default: false,
+      },
+    },
+    required: [],
+  },
+  execute: async (request) => {
+    const { include_port = false } = request.params;
+    const internalUrl = process.env.HOME_ASSISTANT_URL || "http://homeassistant:8123";
+    
+    let url = internalUrl;
+    if (!include_port) {
+      url = url.replace(/:\d+$/, "");
+    }
+    
+    return {
+      dashboard_url: url,
+      internal_url: internalUrl,
+    };
+  },
+},
+{
+  name: "copy_to_clipboard",
+  title: "Copy Text to Clipboard",
+  description: "Copy text to the clipboard for mobile and desktop clients. Use this to quickly copy entity IDs, automation names, or other text to use in Home Assistant.",
+  annotations: {
+    title: "copy_to_clipboard",
+    idempotent: false,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {
+      text: {
+        type: "string",
+        description: "Text to copy to clipboard",
+      },
+    },
+    required: ["text"],
+  },
+  execute: async (request) => {
+    const { text } = request.params;
+    
+    if (!text || text.length === 0) {
+      throw new Error("Text parameter is required");
+    }
+    
+    const result = require("../lib/clipboard").copyToClipboard(text);
+    return result;
+  },
+},
+{
+  name: "mcp_info",
+  title: "Get MCP Server Information",
+  description: "Retrieve information about the MCP server itself, including version, features, and capabilities. Useful for debugging and integration verification.",
+  annotations: {
+    title: "mcp_info",
+    readOnly: true,
+    idempotent: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {},
+  },
+  execute: async () => {
+    return {
+      name: "ha-mcp-server",
+      version: process.env.OPENCODE_VERSION || "unknown",
+      platform: process.platform,
+      "node_version": process.version,
+      "mcp_features": ["tools", "resources", "prompts", "intelligence"],
+      "tools_count": TOOLS.length,
+      "resources_count": RESOURCES.length,
+      "prompts_count": PROMPTS.length,
+    };
+  },
+},
