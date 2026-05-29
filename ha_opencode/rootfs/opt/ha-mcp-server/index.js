@@ -35,6 +35,12 @@
  * - Update management with real-time progress monitoring
  * - ESPHome device management, compile, and upload
  * - Visual verification screenshots of HA frontend pages
+ * - HACS integration (7 tools)
+ * - Grafana integration (4 tools)
+ * - Node-RED integration (4 tools)
+ * - InfluxDB integration (4 tools)
+ * - Add-on Manager (13 tools)
+ * - Mobile features (5 tools)
  * 
  * RESOURCES (9 + 4 templates):
  * - Live entity states by domain

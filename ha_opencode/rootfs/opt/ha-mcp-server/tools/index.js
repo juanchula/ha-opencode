@@ -757,7 +757,6 @@ export const TOOLS = [
       idempotent: true,
     },
   },
-  ];
 
 // ============================================================================
 // MOBILE AND CLIENT-SIDE TOOLS
@@ -779,7 +778,8 @@ export const TOOLS = [
   },
   execute: async () => {
     const userAgent = process.env.MCP_USER_AGENT || "desktop";
-    const isMobile = require("../lib/mobile-features").isMobileClient(userAgent);
+    const { isMobileClient } = await import("../lib/mobile-features.js");
+    const isMobile = isMobileClient(userAgent);
     return {
       is_mobile: isMobile,
       user_agent: userAgent,
@@ -801,7 +801,8 @@ export const TOOLS = [
     properties: {},
   },
   execute: async () => {
-    const info = require("../lib/device-info").getDeviceInfo();
+    const { getDeviceInfo } = await import("../lib/device-info.js");
+    const info = getDeviceInfo();
     return {
       platform: info.platform,
       architecture: info.arch,
@@ -873,7 +874,8 @@ export const TOOLS = [
       throw new Error("Text parameter is required");
     }
     
-    const result = require("../lib/clipboard").copyToClipboard(text);
+    const { copyToClipboard } = await import("../lib/clipboard.js");
+    const result = copyToClipboard(text);
     return result;
   },
 },
@@ -903,3 +905,815 @@ export const TOOLS = [
     };
   },
 },
+
+// ============================================================================
+// HACS (HOME ASSISTANT COMMUNITY STORE) TOOLS
+// ============================================================================
+
+{
+  name: "hacs_status",
+  title: "HACS Status",
+  description: "Get HACS (Home Assistant Community Store) status, installed version, and list installed repositories.",
+  annotations: {
+    title: "hacs_status",
+    readOnly: true,
+    idempotent: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {
+      include_repos: {
+        type: "boolean",
+        description: "Include list of installed repositories",
+        default: false,
+      },
+    },
+    required: [],
+  },
+  execute: async (request) => {
+    const { include_repos = false } = request.params;
+    const { getHacsStatus } = await import("../lib/hacs-integration.js");
+    return await getHacsStatus({ includeRepos: include_repos });
+  },
+},
+{
+  name: "hacs_install_component",
+  title: "Install HACS Component",
+  description: "Install a custom component or integration from HACS (Home Assistant Community Store) by GitHub repository.",
+  annotations: {
+    title: "hacs_install_component",
+    destructive: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {
+      repository: {
+        type: "string",
+        description: "GitHub repository (e.g., 'author/repo')",
+      },
+      category: {
+        type: "string",
+        description: "Component category: integration, theme, plugin, netdaemon, appdaemon, python_script, template",
+        default: "integration",
+      },
+    },
+    required: ["repository"],
+  },
+  execute: async (request) => {
+    const { repository, category = "integration" } = request.params;
+    const { installHacsComponent } = await import("../lib/hacs-integration.js");
+    return await installHacsComponent(repository, category);
+  },
+},
+{
+  name: "hacs_update_component",
+  title: "Update HACS Component",
+  description: "Update an installed HACS component to its latest available version.",
+  annotations: {
+    title: "hacs_update_component",
+    destructive: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {
+      repository: {
+        type: "string",
+        description: "GitHub repository to update (e.g., 'author/repo')",
+      },
+    },
+    required: ["repository"],
+  },
+  execute: async (request) => {
+    const { repository } = request.params;
+    const { updateHacsComponent } = await import("../lib/hacs-integration.js");
+    return await updateHacsComponent(repository);
+  },
+},
+{
+  name: "hacs_remove_component",
+  title: "Remove HACS Component",
+  description: "Remove/delete an installed HACS component from Home Assistant.",
+  annotations: {
+    title: "hacs_remove_component",
+    destructive: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {
+      repository: {
+        type: "string",
+        description: "GitHub repository to remove (e.g., 'author/repo')",
+      },
+    },
+    required: ["repository"],
+  },
+  execute: async (request) => {
+    const { repository } = request.params;
+    const { removeHacsComponent } = await import("../lib/hacs-integration.js");
+    return await removeHacsComponent(repository);
+  },
+},
+{
+  name: "hacs_search",
+  title: "Search HACS Repositories",
+  description: "Search for custom components, themes, and plugins available in HACS.",
+  annotations: {
+    title: "hacs_search",
+    readOnly: true,
+    idempotent: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {
+      query: {
+        type: "string",
+        description: "Search term to find repositories",
+      },
+      category: {
+        type: "string",
+        description: "Optional: Filter by category (integration, theme, plugin, etc.)",
+      },
+    },
+    required: ["query"],
+  },
+  execute: async (request) => {
+    const { query, category } = request.params;
+    const { searchHacsRepositories } = await import("../lib/hacs-integration.js");
+    return await searchHacsRepositories(query, category);
+  },
+},
+{
+  name: "hacs_list_installed",
+  title: "List Installed HACS Components",
+  description: "List all currently installed HACS components with their versions and update status.",
+  annotations: {
+    title: "hacs_list_installed",
+    readOnly: true,
+    idempotent: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {},
+    required: [],
+  },
+  execute: async () => {
+    const { listInstalledHacsComponents } = await import("../lib/hacs-integration.js");
+    return await listInstalledHacsComponents();
+  },
+},
+{
+  name: "hacs_outdated",
+  title: "Check Outdated HACS Components",
+  description: "Check which installed HACS components have updates available.",
+  annotations: {
+    title: "hacs_outdated",
+    readOnly: true,
+    idempotent: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {},
+    required: [],
+  },
+  execute: async () => {
+    const { getHacsOutdatedCount } = await import("../lib/hacs-integration.js");
+    return await getHacsOutdatedCount();
+  },
+},
+
+// ============================================================================
+// GRAFANA TOOLS
+// ============================================================================
+
+{
+  name: "grafana_status",
+  title: "Grafana Status",
+  description: "Check if Grafana add-on is installed and get its connection details.",
+  annotations: {
+    title: "grafana_status",
+    readOnly: true,
+    idempotent: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {},
+    required: [],
+  },
+  execute: async () => {
+    const { discoverGrafana } = await import("../lib/grafana-integration.js");
+    return await discoverGrafana();
+  },
+},
+{
+  name: "grafana_query",
+  title: "Query Grafana",
+  description: "Execute a PromQL or InfluxQL query against Grafana to retrieve metrics and time-series data.",
+  annotations: {
+    title: "grafana_query",
+    readOnly: true,
+    idempotent: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {
+      datasource: {
+        type: "string",
+        description: "Grafana datasource name (e.g., 'Prometheus', 'InfluxDB')",
+      },
+      query: {
+        type: "string",
+        description: "PromQL or InfluxQL query",
+      },
+      from: {
+        type: "string",
+        description: "Time range start (e.g., 'now-1h', '2024-01-01T00:00:00Z')",
+        default: "now-1h",
+      },
+      to: {
+        type: "string",
+        description: "Time range end (e.g., 'now')",
+        default: "now",
+      },
+    },
+    required: ["datasource", "query"],
+  },
+  execute: async (request) => {
+    const { datasource, query, from = "now-1h", to = "now" } = request.params;
+    const { queryGrafana } = await import("../lib/grafana-integration.js");
+    return await queryGrafana(datasource, query, { from, to });
+  },
+},
+{
+  name: "grafana_list_dashboards",
+  title: "List Grafana Dashboards",
+  description: "List all available Grafana dashboards.",
+  annotations: {
+    title: "grafana_list_dashboards",
+    readOnly: true,
+    idempotent: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {},
+    required: [],
+  },
+  execute: async () => {
+    const { getGrafanaDashboards } = await import("../lib/grafana-integration.js");
+    return await getGrafanaDashboards();
+  },
+},
+{
+  name: "grafana_get_dashboard",
+  title: "Get Grafana Dashboard",
+  description: "Get detailed information about a specific Grafana dashboard, including its panels and queries.",
+  annotations: {
+    title: "grafana_get_dashboard",
+    readOnly: true,
+    idempotent: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {
+      uid: {
+        type: "string",
+        description: "Dashboard UID (unique identifier)",
+      },
+    },
+    required: ["uid"],
+  },
+  execute: async (request) => {
+    const { uid } = request.params;
+    const { getGrafanaDashboard } = await import("../lib/grafana-integration.js");
+    return await getGrafanaDashboard(uid);
+  },
+},
+
+// ============================================================================
+// NODE-RED TOOLS
+// ============================================================================
+
+{
+  name: "nodered_status",
+  title: "Node-RED Status",
+  description: "Check if Node-RED add-on is installed and get its health status.",
+  annotations: {
+    title: "nodered_status",
+    readOnly: true,
+    idempotent: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {},
+    required: [],
+  },
+  execute: async () => {
+    const { getNodeRedStatus } = await import("../lib/nodered-integration.js");
+    return await getNodeRedStatus();
+  },
+},
+{
+  name: "nodered_list_flows",
+  title: "List Node-RED Flows",
+  description: "List all flows and nodes in the Node-RED instance.",
+  annotations: {
+    title: "nodered_list_flows",
+    readOnly: true,
+    idempotent: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {},
+    required: [],
+  },
+  execute: async () => {
+    const { listNodeRedFlows } = await import("../lib/nodered-integration.js");
+    return await listNodeRedFlows();
+  },
+},
+{
+  name: "nodered_get_nodes",
+  title: "Get Node-RED Nodes",
+  description: "List all installed Node-RED palette nodes with their versions.",
+  annotations: {
+    title: "nodered_get_nodes",
+    readOnly: true,
+    idempotent: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {},
+    required: [],
+  },
+  execute: async () => {
+    const { getNodeRedNodes } = await import("../lib/nodered-integration.js");
+    return await getNodeRedNodes();
+  },
+},
+{
+  name: "nodered_deploy_flows",
+  title: "Deploy Node-RED Flows",
+  description: "Deploy a Node-RED flow JSON to the instance. CAUTION: This overwrites existing flows.",
+  annotations: {
+    title: "nodered_deploy_flows",
+    destructive: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {
+      flows: {
+        type: "array",
+        description: "Array of Node-RED flow objects to deploy",
+        items: {
+          type: "object",
+          description: "Node-RED flow node object",
+        },
+      },
+    },
+    required: ["flows"],
+  },
+  execute: async (request) => {
+    const { flows } = request.params;
+    const { deployNodeRedFlows } = await import("../lib/nodered-integration.js");
+    return await deployNodeRedFlows(flows);
+  },
+},
+
+// ============================================================================
+// INFLUXDB TOOLS
+// ============================================================================
+
+{
+  name: "influxdb_status",
+  title: "InfluxDB Status",
+  description: "Check if InfluxDB add-on is installed and get its health status.",
+  annotations: {
+    title: "influxdb_status",
+    readOnly: true,
+    idempotent: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {},
+    required: [],
+  },
+  execute: async () => {
+    const { getInfluxDBHealth } = await import("../lib/influxdb-integration.js");
+    return await getInfluxDBHealth();
+  },
+},
+{
+  name: "influxdb_query",
+  title: "Query InfluxDB",
+  description: "Execute a Flux query against InfluxDB to retrieve time-series data.",
+  annotations: {
+    title: "influxdb_query",
+    readOnly: true,
+    idempotent: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {
+      query: {
+        type: "string",
+        description: "Flux query string",
+      },
+      organization: {
+        type: "string",
+        description: "InfluxDB organization (default: homeassistant)",
+        default: "homeassistant",
+      },
+      bucket: {
+        type: "string",
+        description: "InfluxDB bucket (default: homeassistant)",
+        default: "homeassistant",
+      },
+    },
+    required: ["query"],
+  },
+  execute: async (request) => {
+    const { query, organization = "homeassistant", bucket = "homeassistant" } = request.params;
+    const { queryInfluxDB } = await import("../lib/influxdb-integration.js");
+    return await queryInfluxDB(query, { organization, bucket });
+  },
+},
+{
+  name: "influxdb_list_buckets",
+  title: "List InfluxDB Buckets",
+  description: "List all InfluxDB buckets/databases available.",
+  annotations: {
+    title: "influxdb_list_buckets",
+    readOnly: true,
+    idempotent: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {},
+    required: [],
+  },
+  execute: async () => {
+    const { listInfluxDBBuckets } = await import("../lib/influxdb-integration.js");
+    return await listInfluxDBBuckets();
+  },
+},
+{
+  name: "influxdb_query_entity",
+  title: "Query Entity History from InfluxDB",
+  description: "Query Home Assistant entity history data directly from InfluxDB.",
+  annotations: {
+    title: "influxdb_query_entity",
+    readOnly: true,
+    idempotent: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {
+      entity_id: {
+        type: "string",
+        description: "Entity ID to query (e.g., 'sensor.temperature')",
+      },
+      from: {
+        type: "string",
+        description: "Time range start (e.g., '-1h', '-7d')",
+        default: "-1h",
+      },
+      to: {
+        type: "string",
+        description: "Time range end (default: now)",
+        default: "now()",
+      },
+    },
+    required: ["entity_id"],
+  },
+  execute: async (request) => {
+    const { entity_id, from = "-1h", to = "now()" } = request.params;
+    const { queryEntityHistory } = await import("../lib/influxdb-integration.js");
+    return await queryEntityHistory(entity_id, "homeassistant", { from, to });
+  },
+},
+
+// ============================================================================
+// ADD-ON MANAGER TOOLS
+// ============================================================================
+
+{
+  name: "addon_list",
+  title: "List Installed Add-ons",
+  description: "List all installed Home Assistant add-ons with their status and versions.",
+  annotations: {
+    title: "addon_list",
+    readOnly: true,
+    idempotent: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {},
+    required: [],
+  },
+  execute: async () => {
+    const { listInstalledAddons } = await import("../lib/addon-manager.js");
+    return await listInstalledAddons();
+  },
+},
+{
+  name: "addon_info",
+  title: "Get Add-on Info",
+  description: "Get detailed information about a specific Home Assistant add-on.",
+  annotations: {
+    title: "addon_info",
+    readOnly: true,
+    idempotent: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {
+      slug: {
+        type: "string",
+        description: "Add-on slug (identifier)",
+      },
+    },
+    required: ["slug"],
+  },
+  execute: async (request) => {
+    const { slug } = request.params;
+    const { getAddonInfo } = await import("../lib/addon-manager.js");
+    return await getAddonInfo(slug);
+  },
+},
+{
+  name: "addon_start",
+  title: "Start Add-on",
+  description: "Start a Home Assistant add-on.",
+  annotations: {
+    title: "addon_start",
+    destructive: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {
+      slug: {
+        type: "string",
+        description: "Add-on slug to start",
+      },
+    },
+    required: ["slug"],
+  },
+  execute: async (request) => {
+    const { slug } = request.params;
+    const { startAddon } = await import("../lib/addon-manager.js");
+    return await startAddon(slug);
+  },
+},
+{
+  name: "addon_stop",
+  title: "Stop Add-on",
+  description: "Stop a running Home Assistant add-on.",
+  annotations: {
+    title: "addon_stop",
+    destructive: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {
+      slug: {
+        type: "string",
+        description: "Add-on slug to stop",
+      },
+    },
+    required: ["slug"],
+  },
+  execute: async (request) => {
+    const { slug } = request.params;
+    const { stopAddon } = await import("../lib/addon-manager.js");
+    return await stopAddon(slug);
+  },
+},
+{
+  name: "addon_restart",
+  title: "Restart Add-on",
+  description: "Restart a Home Assistant add-on.",
+  annotations: {
+    title: "addon_restart",
+    destructive: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {
+      slug: {
+        type: "string",
+        description: "Add-on slug to restart",
+      },
+    },
+    required: ["slug"],
+  },
+  execute: async (request) => {
+    const { slug } = request.params;
+    const { restartAddon } = await import("../lib/addon-manager.js");
+    return await restartAddon(slug);
+  },
+},
+{
+  name: "addon_update",
+  title: "Update Add-on",
+  description: "Update a Home Assistant add-on to the latest available version.",
+  annotations: {
+    title: "addon_update",
+    destructive: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {
+      slug: {
+        type: "string",
+        description: "Add-on slug to update",
+      },
+    },
+    required: ["slug"],
+  },
+  execute: async (request) => {
+    const { slug } = request.params;
+    const { updateAddon } = await import("../lib/addon-manager.js");
+    return await updateAddon(slug);
+  },
+},
+{
+  name: "addon_install",
+  title: "Install Add-on",
+  description: "Install a new add-on from the Supervisor add-on store.",
+  annotations: {
+    title: "addon_install",
+    destructive: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {
+      slug: {
+        type: "string",
+        description: "Add-on slug to install from the store",
+      },
+    },
+    required: ["slug"],
+  },
+  execute: async (request) => {
+    const { slug } = request.params;
+    const { installAddon } = await import("../lib/addon-manager.js");
+    return await installAddon(slug);
+  },
+},
+{
+  name: "addon_uninstall",
+  title: "Uninstall Add-on",
+  description: "Uninstall a Home Assistant add-on.",
+  annotations: {
+    title: "addon_uninstall",
+    destructive: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {
+      slug: {
+        type: "string",
+        description: "Add-on slug to uninstall",
+      },
+    },
+    required: ["slug"],
+  },
+  execute: async (request) => {
+    const { slug } = request.params;
+    const { uninstallAddon } = await import("../lib/addon-manager.js");
+    return await uninstallAddon(slug);
+  },
+},
+{
+  name: "addon_logs",
+  title: "Get Add-on Logs",
+  description: "Retrieve logs from a specific Home Assistant add-on.",
+  annotations: {
+    title: "addon_logs",
+    readOnly: true,
+    idempotent: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {
+      slug: {
+        type: "string",
+        description: "Add-on slug to get logs from",
+      },
+      lines: {
+        type: "number",
+        description: "Number of log lines to retrieve (max 1000)",
+        default: 100,
+      },
+    },
+    required: ["slug"],
+  },
+  execute: async (request) => {
+    const { slug, lines = 100 } = request.params;
+    const { getAddonLogs } = await import("../lib/addon-manager.js");
+    return await getAddonLogs(slug, lines);
+  },
+},
+{
+  name: "addon_stats",
+  title: "Get Add-on Stats",
+  description: "Get CPU, memory, and network statistics for a Home Assistant add-on.",
+  annotations: {
+    title: "addon_stats",
+    readOnly: true,
+    idempotent: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {
+      slug: {
+        type: "string",
+        description: "Add-on slug to get stats for",
+      },
+    },
+    required: ["slug"],
+  },
+  execute: async (request) => {
+    const { slug } = request.params;
+    const { getAddonStats } = await import("../lib/addon-manager.js");
+    return await getAddonStats(slug);
+  },
+},
+{
+  name: "addon_set_options",
+  title: "Set Add-on Options",
+  description: "Update configuration options for a Home Assistant add-on.",
+  annotations: {
+    title: "addon_set_options",
+    destructive: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {
+      slug: {
+        type: "string",
+        description: "Add-on slug to configure",
+      },
+      options: {
+        type: "object",
+        description: "Configuration options to set",
+        additionalProperties: true,
+      },
+    },
+    required: ["slug", "options"],
+  },
+  execute: async (request) => {
+    const { slug, options } = request.params;
+    const { setAddonOptions } = await import("../lib/addon-manager.js");
+    return await setAddonOptions(slug, options);
+  },
+},
+{
+  name: "addon_add_repository",
+  title: "Add Add-on Repository",
+  description: "Add a custom add-on repository URL to Supervisor.",
+  annotations: {
+    title: "addon_add_repository",
+    destructive: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {
+      url: {
+        type: "string",
+        description: "Repository URL (e.g., 'https://github.com/author/repo')",
+      },
+    },
+    required: ["url"],
+  },
+  execute: async (request) => {
+    const { url } = request.params;
+    const { addAddonRepository } = await import("../lib/addon-manager.js");
+    return await addAddonRepository(url);
+  },
+},
+{
+  name: "addon_remove_repository",
+  title: "Remove Add-on Repository",
+  description: "Remove a custom add-on repository URL from Supervisor.",
+  annotations: {
+    title: "addon_remove_repository",
+    destructive: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {
+      url: {
+        type: "string",
+        description: "Repository URL to remove",
+      },
+    },
+    required: ["url"],
+  },
+  execute: async (request) => {
+    const { url } = request.params;
+    const { removeAddonRepository } = await import("../lib/addon-manager.js");
+    return await removeAddonRepository(url);
+  },
+},
+
+];
