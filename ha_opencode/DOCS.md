@@ -243,7 +243,7 @@ Then restart OpenCode (exit and run `opencode` again).
 
 ---
 
-## MCP Tools (33 Available)
+## MCP Tools (90+ Available)
 
 ### State Management
 
@@ -347,6 +347,118 @@ Then restart OpenCode (exit and run `opencode` again).
 ---
 
 ## MCP Resources
+### HACS Integration (Home Assistant Community Store)
+
+| Tool | Description |
+|------|-------------|
+| `hacs_status` | Check if HACS is installed and get version info |
+| `hacs_install` | Install a custom repository via HACS |
+| `hacs_update` | Update a HACS component to latest version |
+| `hacs_remove` | Remove a HACS component |
+| `hacs_search` | Search HACS repositories by query |
+| `hacs_list` | List all installed HACS components |
+| `hacs_outdated` | Count outdated HACS components needing updates |
+
+### Grafana Integration
+
+| Tool | Description |
+|------|-------------|
+| `grafana_discover` | Discover Grafana addon and get status |
+| `grafana_dashboards` | List all Grafana dashboards |
+| `grafana_dashboard` | Get details of a specific dashboard |
+| `grafana_query` | Query Grafana datasources (PromQL) |
+| `grafana_datasources` | List configured Grafana datasources |
+
+### Node-RED Integration
+
+| Tool | Description |
+|------|-------------|
+| `nodered_status` | Get Node-RED status and health |
+| `nodered_flows` | List all Node-RED flows |
+| `nodered_nodes` | List installed Node-RED nodes |
+| `nodered_deploy` | Deploy a set of Node-RED flows |
+
+### InfluxDB Integration
+
+| Tool | Description |
+|------|-------------|
+| `influxdb_health` | Check InfluxDB health status |
+| `influxdb_query` | Execute Flux query against InfluxDB |
+| `influxdb_history` | Query entity history from InfluxDB |
+| `influxdb_buckets` | List InfluxDB buckets |
+
+### Supervisor Addon Manager
+
+| Tool | Description |
+|------|-------------|
+| `addon_list` | List all installed addons |
+| `addon_info` | Get detailed addon information |
+| `addon_start` | Start a Supervisor addon |
+| `addon_stop` | Stop a Supervisor addon |
+| `addon_restart` | Restart a Supervisor addon |
+| `addon_update` | Update an addon to latest version |
+| `addon_install` | Install an addon |
+| `addon_uninstall` | Uninstall an addon |
+| `addon_logs` | Get addon logs |
+| `addon_stats` | Get addon resource usage stats |
+| `addon_options` | Configure addon options |
+| `addon_repository_add` | Add a custom addon repository URL |
+| `addon_repository_remove` | Remove a custom addon repository URL |
+
+### Frigate NVR Integration
+
+| Tool | Description |
+|------|-------------|
+| `frigate_status` | Get Frigate status with camera FPS and detection summary |
+| `frigate_events` | List detection events with camera/label filtering |
+| `frigate_snapshot` | Get snapshot image URL for a detection event |
+| `frigate_cameras` | List all cameras with stats |
+| `frigate_recordings` | Get recording summary by camera |
+
+### Backup Manager
+
+| Tool | Description |
+|------|-------------|
+| `backup_list` | List all Home Assistant backups |
+| `backup_create` | Create a full backup |
+| `backup_restore` | Restore a backup by slug |
+| `backup_delete` | Delete a backup |
+| `backup_info` | Get backup storage info |
+| `backup_download` | Get download URL for a backup |
+
+### Music Assistant Integration
+
+| Tool | Description |
+|------|-------------|
+| `ma_status` | Get Music Assistant status |
+| `ma_players` | List all players |
+| `ma_search` | Search music library across providers |
+| `ma_playlists` | List all playlists |
+| `ma_providers` | List configured music providers |
+
+### Developer Tools Management
+
+| Tool | Description |
+|------|-------------|
+| `devtools_status` | Get status of SSH, Code Server, Samba, MariaDB, Mosquitto, NGINX |
+| `devtools_info` | Get detailed info about any addon |
+| `devtools_install` | Install a developer tool addon |
+| `devtools_start` | Start a developer tool addon |
+| `devtools_stop` | Stop a developer tool addon |
+| `devtools_restart` | Restart a developer tool addon |
+| `devtools_update` | Update a developer tool addon |
+| `devtools_search` | Search available addons by name |
+
+### Mobile & Device Tools
+
+| Tool | Description |
+|------|-------------|
+| `is_mobile_client` | Detect if the current client is a mobile device |
+| `get_device_info` | Get detailed environment and device information |
+| `copy_to_clipboard` | Copy text to clipboard (ideal for mobile clients) |
+| `get_ha_dashboard_url` | Get the Home Assistant dashboard URL |
+| `mcp_info` | Get information about the MCP server itself |
+
 
 Resources provide browsable context that the AI can access proactively:
 
