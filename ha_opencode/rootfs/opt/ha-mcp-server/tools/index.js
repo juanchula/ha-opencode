@@ -1715,5 +1715,299 @@ export const TOOLS = [
     return await removeAddonRepository(url);
   },
 },
+{
+  name: "frigate_status",
+  title: "Frigate NVR Status",
+  description: "Get Frigate NVR status with camera summary including FPS and detected objects",
+  annotations: { title: "frigate_status", readOnly: true, idempotent: true },
+  inputSchema: { type: "object", properties: {} },
+  execute: async () => {
+    const { getFrigateStatus } = await import("../lib/frigate-integration.js");
+    return await getFrigateStatus();
+  },
+},
+{
+  name: "frigate_events",
+  title: "Frigate Events",
+  description: "List recent Frigate detection events with optional camera/label filtering",
+  annotations: { title: "frigate_events", readOnly: true },
+  inputSchema: {
+    type: "object",
+    properties: {
+      camera: { type: "string", description: "Filter by camera name" },
+      label: { type: "string", description: "Filter by object label (person, car, etc)" },
+      limit: { type: "number", description: "Max events to return (default 50)" },
+    },
+  },
+  execute: async (request) => {
+    const { getFrigateEvents } = await import("../lib/frigate-integration.js");
+    return await getFrigateEvents(request.params);
+  },
+},
+{
+  name: "frigate_snapshot",
+  title: "Frigate Event Snapshot",
+  description: "Get snapshot URL for a Frigate detection event",
+  annotations: { title: "frigate_snapshot", readOnly: true },
+  inputSchema: {
+    type: "object",
+    properties: {
+      event_id: { type: "string", description: "Event ID" },
+      width: { type: "number", description: "Image width in pixels" },
+    },
+    required: ["event_id"],
+  },
+  execute: async (request) => {
+    const { getFrigateSnapshot } = await import("../lib/frigate-integration.js");
+    const { event_id, ...opts } = request.params;
+    return await getFrigateSnapshot(event_id, opts);
+  },
+},
+{
+  name: "frigate_cameras",
+  title: "Frigate Cameras",
+  description: "List all Frigate cameras with current stats",
+  annotations: { title: "frigate_cameras", readOnly: true },
+  inputSchema: { type: "object", properties: {} },
+  execute: async () => {
+    const { listFrigateCameras } = await import("../lib/frigate-integration.js");
+    return await listFrigateCameras();
+  },
+},
+{
+  name: "frigate_recordings",
+  title: "Frigate Recordings",
+  description: "Get Frigate recording summary by camera",
+  annotations: { title: "frigate_recordings", readOnly: true },
+  inputSchema: { type: "object", properties: { camera: { type: "string", description: "Camera name" } } },
+  execute: async (request) => {
+    const { getFrigateRecordings } = await import("../lib/frigate-integration.js");
+    return await getFrigateRecordings(request.params);
+  },
+},
+{
+  name: "backup_list",
+  title: "List Backups",
+  description: "List all Home Assistant backups with details",
+  annotations: { title: "backup_list", readOnly: true },
+  inputSchema: { type: "object", properties: {} },
+  execute: async () => {
+    const { listBackups } = await import("../lib/backup-manager.js");
+    return await listBackups();
+  },
+},
+{
+  name: "backup_create",
+  title: "Create Backup",
+  description: "Create a full Home Assistant backup",
+  annotations: { title: "backup_create" },
+  inputSchema: {
+    type: "object",
+    properties: {
+      name: { type: "string", description: "Backup name" },
+      password: { type: "string", description: "Optional encryption password" },
+    },
+  },
+  execute: async (request) => {
+    const { createBackup } = await import("../lib/backup-manager.js");
+    return await createBackup(request.params);
+  },
+},
+{
+  name: "backup_restore",
+  title: "Restore Backup",
+  description: "Restore a Home Assistant backup by slug",
+  annotations: { title: "backup_restore", destructive: true },
+  inputSchema: {
+    type: "object",
+    properties: {
+      slug: { type: "string", description: "Backup slug to restore" },
+      password: { type: "string" },
+      homeassistant: { type: "boolean" },
+    },
+    required: ["slug"],
+  },
+  execute: async (request) => {
+    const { restoreBackup } = await import("../lib/backup-manager.js");
+    const { slug, ...opts } = request.params;
+    return await restoreBackup(slug, opts);
+  },
+},
+{
+  name: "backup_delete",
+  title: "Delete Backup",
+  description: "Delete a Home Assistant backup",
+  annotations: { title: "backup_delete", destructive: true },
+  inputSchema: { type: "object", properties: { slug: { type: "string", description: "Backup slug to delete" } }, required: ["slug"] },
+  execute: async (request) => {
+    const { deleteBackup } = await import("../lib/backup-manager.js");
+    return await deleteBackup(request.params.slug);
+  },
+},
+{
+  name: "backup_info",
+  title: "Backup Storage Info",
+  description: "Get backup storage information",
+  annotations: { title: "backup_info", readOnly: true },
+  inputSchema: { type: "object", properties: {} },
+  execute: async () => {
+    const { getBackupInfoStatus } = await import("../lib/backup-manager.js");
+    return await getBackupInfoStatus();
+  },
+},
+{
+  name: "backup_download",
+  title: "Download Backup",
+  description: "Get download URL for a specific backup",
+  annotations: { title: "backup_download", readOnly: true },
+  inputSchema: { type: "object", properties: { slug: { type: "string", description: "Backup slug" } }, required: ["slug"] },
+  execute: async (request) => {
+    const { downloadBackup } = await import("../lib/backup-manager.js");
+    return await downloadBackup(request.params.slug);
+  },
+},
+{
+  name: "ma_status",
+  title: "Music Assistant Status",
+  description: "Get Music Assistant status with player and provider counts",
+  annotations: { title: "ma_status", readOnly: true },
+  inputSchema: { type: "object", properties: {} },
+  execute: async () => {
+    const { getMusicAssistantStatus } = await import("../lib/music-assistant-integration.js");
+    return await getMusicAssistantStatus();
+  },
+},
+{
+  name: "ma_players",
+  title: "Music Assistant Players",
+  description: "List all Music Assistant players",
+  annotations: { title: "ma_players", readOnly: true },
+  inputSchema: { type: "object", properties: {} },
+  execute: async () => {
+    const { listMaPlayers } = await import("../lib/music-assistant-integration.js");
+    return await listMaPlayers();
+  },
+},
+{
+  name: "ma_search",
+  title: "Music Assistant Search",
+  description: "Search music library across all providers",
+  annotations: { title: "ma_search", readOnly: true },
+  inputSchema: { type: "object", properties: { query: { type: "string", description: "Search query" }, limit: { type: "number", description: "Max results" } }, required: ["query"] },
+  execute: async (request) => {
+    const { searchMaMusic } = await import("../lib/music-assistant-integration.js");
+    return await searchMaMusic(request.params.query, request.params);
+  },
+},
+{
+  name: "ma_playlists",
+  title: "Music Assistant Playlists",
+  description: "List all playlists from all providers",
+  annotations: { title: "ma_playlists", readOnly: true },
+  inputSchema: { type: "object", properties: {} },
+  execute: async () => {
+    const { listMaPlaylists } = await import("../lib/music-assistant-integration.js");
+    return await listMaPlaylists();
+  },
+},
+{
+  name: "ma_providers",
+  title: "Music Assistant Providers",
+  description: "List all configured music providers",
+  annotations: { title: "ma_providers", readOnly: true },
+  inputSchema: { type: "object", properties: {} },
+  execute: async () => {
+    const { listMaProviders } = await import("../lib/music-assistant-integration.js");
+    return await listMaProviders();
+  },
+},
+{
+  name: "devtools_status",
+  title: "Developer Tools Status",
+  description: "Get status of all developer tools addons",
+  annotations: { title: "devtools_status", readOnly: true },
+  inputSchema: { type: "object", properties: {} },
+  execute: async () => {
+    const { getDevToolsStatus } = await import("../lib/dev-tools-integration.js");
+    return await getDevToolsStatus();
+  },
+},
+{
+  name: "devtools_info",
+  title: "Developer Tool Info",
+  description: "Get detailed info about a specific developer tool addon",
+  annotations: { title: "devtools_info", readOnly: true },
+  inputSchema: { type: "object", properties: { slug: { type: "string", description: "Addon slug" } }, required: ["slug"] },
+  execute: async (request) => {
+    const { getDevToolInfo } = await import("../lib/dev-tools-integration.js");
+    return await getDevToolInfo(request.params.slug);
+  },
+},
+{
+  name: "devtools_install",
+  title: "Install Developer Tool",
+  description: "Install a developer tool addon",
+  annotations: { title: "devtools_install", destructive: true },
+  inputSchema: { type: "object", properties: { slug: { type: "string" } }, required: ["slug"] },
+  execute: async (request) => {
+    const { installDevTool } = await import("../lib/dev-tools-integration.js");
+    return await installDevTool(request.params.slug);
+  },
+},
+{
+  name: "devtools_start",
+  title: "Start Developer Tool",
+  description: "Start a developer tool addon",
+  annotations: { title: "devtools_start", destructive: true },
+  inputSchema: { type: "object", properties: { slug: { type: "string" } }, required: ["slug"] },
+  execute: async (request) => {
+    const { startDevTool } = await import("../lib/dev-tools-integration.js");
+    return await startDevTool(request.params.slug);
+  },
+},
+{
+  name: "devtools_stop",
+  title: "Stop Developer Tool",
+  description: "Stop a developer tool addon",
+  annotations: { title: "devtools_stop", destructive: true },
+  inputSchema: { type: "object", properties: { slug: { type: "string" } }, required: ["slug"] },
+  execute: async (request) => {
+    const { stopDevTool } = await import("../lib/dev-tools-integration.js");
+    return await stopDevTool(request.params.slug);
+  },
+},
+{
+  name: "devtools_restart",
+  title: "Restart Developer Tool",
+  description: "Restart a developer tool addon",
+  annotations: { title: "devtools_restart", destructive: true },
+  inputSchema: { type: "object", properties: { slug: { type: "string" } }, required: ["slug"] },
+  execute: async (request) => {
+    const { restartDevTool } = await import("../lib/dev-tools-integration.js");
+    return await restartDevTool(request.params.slug);
+  },
+},
+{
+  name: "devtools_update",
+  title: "Update Developer Tool",
+  description: "Update a developer tool addon to the latest version",
+  annotations: { title: "devtools_update" },
+  inputSchema: { type: "object", properties: { slug: { type: "string" } }, required: ["slug"] },
+  execute: async (request) => {
+    const { updateDevTool } = await import("../lib/dev-tools-integration.js");
+    return await updateDevTool(request.params.slug);
+  },
+},
+{
+  name: "devtools_search",
+  title: "Search Addons",
+  description: "Search available addons by name or description",
+  annotations: { title: "devtools_search", readOnly: true },
+  inputSchema: { type: "object", properties: { query: { type: "string", description: "Search query" } }, required: ["query"] },
+  execute: async (request) => {
+    const { searchAddons } = await import("../lib/dev-tools-integration.js");
+    return await searchAddons(request.params.query);
+  },
+}
 
 ];
