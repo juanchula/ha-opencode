@@ -50,7 +50,7 @@ options:
   
   # Screenshot tool: enables visual verification of dashboards and UI changes.
   # Requires a Long-Lived Access Token (below) to authenticate with the HA frontend.
-  screenshot_enabled: true
+  screenshot_enabled: false
 
   # Long-lived access token for direct HA Core API access.
   # Required for ESPHome ingress and screenshot tool (create at: Profile → Long-Lived Access Tokens).
@@ -61,6 +61,37 @@ options:
   # Set your Z2M ingress URL to enable list-z2m, network-map --backend z2m, etc.
   z2m_url: ""
   z2m_mqtt_topic: "zigbee2mqtt"
+
+  # HACS integration (optional — enables HACS status, install, search, update, remove tools)
+  hacs_enabled: false
+
+  # Grafana integration (optional — enables dashboard and datasource queries)
+  grafana_enabled: false
+  grafana_url: ""
+
+  # Node-RED integration (optional — enables flow and node management)
+  nodered_enabled: false
+  nodered_url: ""
+
+  # InfluxDB integration (optional — enables time-series queries)
+  influxdb_enabled: false
+  influxdb_url: ""
+  influxdb_org: "homeassistant"
+  influxdb_bucket: "homeassistant"
+
+  # Addon Manager (optional — enables Supervisor addon management)
+  addon_manager_enabled: false
+
+  # Frigate NVR integration (optional — enables camera and event queries)
+  frigate_enabled: false
+  frigate_url: ""
+
+  # Backup Manager (optional — enables HA backup create/restore/list)
+  backup_manager_enabled: true
+
+  # Music Assistant integration (optional — enables player and media control)
+  music_assistant_enabled: false
+  music_assistant_url: ""
 
   # Environment variables to inject into the container
   env_vars: []
@@ -92,17 +123,26 @@ schema:
   z2m_url: str?
   z2m_mqtt_topic: str?
 
+  # HACS integration
+  hacs_enabled: bool
+  grafana_enabled: bool
+  grafana_url: str?
+  nodered_enabled: bool
+  nodered_url: str?
+  influxdb_enabled: bool
+  influxdb_url: str?
+  influxdb_org: str?
+  influxdb_bucket: str?
+  addon_manager_enabled: bool
+  frigate_enabled: bool
+  frigate_url: str?
+  backup_manager_enabled: bool
+  music_assistant_enabled: bool
+  music_assistant_url: str?
+
   # Environment variables
   env_vars:
     - name: str
-  - name: TEST_VAR_XYZ
-  - name: TEST_VAR_XYZ
-  - name: TEST_VAR_XYZ
-  - name: TEST_VAR_XYZ
-    value: test_value_xyz
-    value: test_value_xyz
-    value: test_value_xyz
-    value: test_value_xyz
       value: str
   
   # Advanced
