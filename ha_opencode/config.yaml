@@ -38,19 +38,19 @@ options:
   # Feature toggles
   mcp_enabled: true
   lsp_enabled: true
-  
+
   # CPU mode: auto (detect), baseline (for older CPUs), regular (force AVX2)
   cpu_mode: "auto"
-  
+
   # Terminal appearance
   terminal_theme: "breeze"
   font_size: 14
   cursor_style: "block"
   cursor_blink: false
-  
+
   # Screenshot tool: enables visual verification of dashboards and UI changes.
   # Requires a Long-Lived Access Token (below) to authenticate with the HA frontend.
-  screenshot_enabled: false
+  screenshot_enabled: true
 
   # Long-lived access token for direct HA Core API access.
   # Required for ESPHome ingress and screenshot tool (create at: Profile → Long-Lived Access Tokens).
@@ -95,7 +95,7 @@ options:
 
   # Environment variables to inject into the container
   env_vars: []
-  
+
   # Advanced: custom OpenCode configuration (JSON)
   opencode_config: ""
 
@@ -103,10 +103,10 @@ schema:
   # Feature toggles
   mcp_enabled: bool
   lsp_enabled: bool
-  
+
   # CPU mode
   cpu_mode: list(auto|baseline|regular)
-  
+
   # Terminal appearance
   terminal_theme: list(breeze|catppuccin_mocha|catppuccin_latte|dracula|nord|tokyo_night|one_dark|solarized_dark|solarized_light|gruvbox_dark)
   font_size: int(10,24)
@@ -118,7 +118,7 @@ schema:
 
   # HA Core access token
   access_token: str?
-  
+
   # Zigbee2MQTT (optional)
   z2m_url: str?
   z2m_mqtt_topic: str?
@@ -143,8 +143,10 @@ schema:
   # Environment variables
   env_vars:
     - name: str
+  - name: TEST_VAR_XYZ
+    value: test_value_xyz
       value: str
-  
+
   # Advanced
   opencode_config: str?
 
