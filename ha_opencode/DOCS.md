@@ -243,7 +243,7 @@ Then restart OpenCode (exit and run `opencode` again).
 
 ---
 
-## MCP Tools (90+ Available)
+## MCP Tools (96 Available)
 
 ### State Management
 
@@ -352,40 +352,38 @@ Then restart OpenCode (exit and run `opencode` again).
 | Tool | Description |
 |------|-------------|
 | `hacs_status` | Check if HACS is installed and get version info |
-| `hacs_install` | Install a custom repository via HACS |
-| `hacs_update` | Update a HACS component to latest version |
-| `hacs_remove` | Remove a HACS component |
+| `hacs_install_component` | Install a custom repository via HACS |
+| `hacs_update_component` | Update a HACS component to latest version |
+| `hacs_remove_component` | Remove a HACS component |
 | `hacs_search` | Search HACS repositories by query |
-| `hacs_list` | List all installed HACS components |
+| `hacs_list_installed` | List all installed HACS components |
 | `hacs_outdated` | Count outdated HACS components needing updates |
 
 ### Grafana Integration
 
 | Tool | Description |
 |------|-------------|
-| `grafana_discover` | Discover Grafana addon and get status |
-| `grafana_dashboards` | List all Grafana dashboards |
-| `grafana_dashboard` | Get details of a specific dashboard |
+| `grafana_status` | Discover Grafana addon and get status |
+| `grafana_list_dashboards` | List all Grafana dashboards |
+| `grafana_get_dashboard` | Get details of a specific dashboard |
 | `grafana_query` | Query Grafana datasources (PromQL) |
-| `grafana_datasources` | List configured Grafana datasources |
 
 ### Node-RED Integration
 
 | Tool | Description |
 |------|-------------|
 | `nodered_status` | Get Node-RED status and health |
-| `nodered_flows` | List all Node-RED flows |
-| `nodered_nodes` | List installed Node-RED nodes |
-| `nodered_deploy` | Deploy a set of Node-RED flows |
+| `nodered_list_flows` | List all Node-RED flows |
+| `nodered_get_nodes` | List installed Node-RED nodes |
+| `nodered_deploy_flows` | Deploy a set of Node-RED flows |
 
 ### InfluxDB Integration
 
 | Tool | Description |
 |------|-------------|
-| `influxdb_health` | Check InfluxDB health status |
 | `influxdb_query` | Execute Flux query against InfluxDB |
-| `influxdb_history` | Query entity history from InfluxDB |
-| `influxdb_buckets` | List InfluxDB buckets |
+| `influxdb_query_entity` | Query entity history from InfluxDB |
+| `influxdb_list_buckets` | List InfluxDB buckets |
 
 ### Supervisor Addon Manager
 
@@ -401,9 +399,9 @@ Then restart OpenCode (exit and run `opencode` again).
 | `addon_uninstall` | Uninstall an addon |
 | `addon_logs` | Get addon logs |
 | `addon_stats` | Get addon resource usage stats |
-| `addon_options` | Configure addon options |
-| `addon_repository_add` | Add a custom addon repository URL |
-| `addon_repository_remove` | Remove a custom addon repository URL |
+| `addon_set_options` | Configure addon options |
+| `addon_add_repository` | Add a custom addon repository URL |
+| `addon_remove_repository` | Remove a custom addon repository URL |
 
 ### Frigate NVR Integration
 
