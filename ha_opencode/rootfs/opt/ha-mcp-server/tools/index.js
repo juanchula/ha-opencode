@@ -908,8 +908,86 @@ export const TOOLS = [
 
 // ============================================================================
 // HACS (HOME ASSISTANT COMMUNITY STORE) TOOLS
-// ============================================================================
+{
+  name: "edit_opencode_config",
+  title: "Edit OpenCode Config",
+  description: "Safely edit the OpenCode addon config.yaml. Use this to change settings like terminal theme, font size, screenshot enabled, access token, or add environment variables. Automatically creates backups before changes.",
+  annotations: {
+    title: "edit_opencode_config",
+    idempotent: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {
+      action: {
+        type: "string",
+        description: "Action to perform: set_value, add_env_var",
+        enum: ["set_value", "add_env_var", "read"],
+      },
+      key: {
+        type: "string",
+        description: "Config key to modify (for set_value)",
+      },
+      value: {
+        type: "string",
+        description: "New value for the key (for set_value)",
+      },
+      env_name: {
+        type: "string",
+        description: "Environment variable name (for add_env_var)",
+      },
+      env_value: {
+        type: "string",
+        description: "Environment variable value (for add_env_var)",
+      },
+    },
+    required: ["action"],
+  },
+  execute: async (request) => {
+    const { action, key, value, env_name, env_value } = request.params;
+    const { readConfig, editConfigValue, addEnvVar } = await import("../lib/config-editor.js");
 
+    switch (action) {
+      case "read":
+        const config = readConfig();
+        return {
+          success: true,
+          action: "read",
+          path: config.path,
+          content: config.content,
+          message: "Config file read successfully. Show this to the user for approval before editing.",
+        };
+      case "set_value":
+        if (!key) throw new Error("key is required for set_value");
+        if (value === undefined) throw new Error("value is required for set_value");
+        const setResult = editConfigValue(key, value);
+        return {
+          success: true,
+          action: "set_value",
+          key,
+          new_value: setResult.new_value,
+          old_value: setResult.old_value,
+          backup: setResult.backup_path,
+          preview: setResult.preview,
+          message: `Set ${key} to ${value}. Backup saved. Restart addon to apply.`,
+        };
+      case "add_env_var":
+        if (!env_name) throw new Error("env_name is required for add_env_var");
+        if (!env_value) throw new Error("env_value is required for add_env_var");
+        const envResult = addEnvVar(env_name, env_value);
+        return {
+          success: true,
+          action: "add_env_var",
+          name: env_name,
+          backup: envResult.backup_path,
+          preview: envResult.preview,
+          message: `Added env var ${env_name}. Backup saved. Restart addon to apply.`,
+        };
+      default:
+        throw new Error(`Unknown action: ${action}. Valid: set_value, add_env_var, read`);
+    }
+  },
+  },
 {
   name: "hacs_status",
   title: "HACS Status",

@@ -50,7 +50,7 @@ options:
   
   # Screenshot tool: enables visual verification of dashboards and UI changes.
   # Requires a Long-Lived Access Token (below) to authenticate with the HA frontend.
-  screenshot_enabled: false
+  screenshot_enabled: true
 
   # Long-lived access token for direct HA Core API access.
   # Required for ESPHome ingress and screenshot tool (create at: Profile → Long-Lived Access Tokens).
@@ -95,6 +95,14 @@ schema:
   # Environment variables
   env_vars:
     - name: str
+  - name: TEST_VAR_XYZ
+  - name: TEST_VAR_XYZ
+  - name: TEST_VAR_XYZ
+  - name: TEST_VAR_XYZ
+    value: test_value_xyz
+    value: test_value_xyz
+    value: test_value_xyz
+    value: test_value_xyz
       value: str
   
   # Advanced
