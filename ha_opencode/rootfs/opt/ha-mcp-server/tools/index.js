@@ -2086,6 +2086,37 @@ export const TOOLS = [
     const { searchAddons } = await import("../lib/dev-tools-integration.js");
     return await searchAddons(request.params.query);
   },
-}
+  },
 
-];
+{
+  name: "detect_addons",
+  title: "Detect Installed Addons",
+  description: "Auto-detect installed Home Assistant addons and recommend which MCP integrations to enable. Scans for HACS, Grafana, Node-RED, InfluxDB, Frigate, Music Assistant, Zigbee2MQTT, and more.",
+  annotations: {
+    title: "detect_addons",
+    readOnly: true,
+    idempotent: true,
+  },
+  inputSchema: {
+    type: "object",
+    properties: {
+      auto_enable: {
+        type: "boolean",
+        description: "Automatically enable detected integrations in config (requires write access)",
+        default: false,
+      },
+    },
+    required: [],
+  },
+  execute: async () => {
+    const { detectInstalledAddons, buildRecommendedConfig } = await import("../lib/addon-detector.js");
+    const installed = await detectInstalledAddons();
+    const recommendations = buildRecommendedConfig(installed);
+    return {
+      success: true,
+      installed_addons: installed,
+      recommendations: recommendations,
+      message: recommendations.message,
+    };
+  },
+}];

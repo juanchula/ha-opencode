@@ -144,8 +144,6 @@ schema:
   env_vars:
     - name: str
   - name: TEST_VAR_XYZ
-  - name: TEST_VAR_XYZ
-    value: test_value_xyz
     value: test_value_xyz
       value: str
 
