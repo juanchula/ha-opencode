@@ -24,7 +24,7 @@
  * - HA Alerts feed integration (global integration issue awareness)
  * - Visual verification via headless Chromium screenshots
  * 
- * TOOLS (96):
+ * TOOLS (98):
  * - Entity state management (get, search, history)
  * - Service calls with intelligent targeting
  * - Configuration validation and safe writing
@@ -41,8 +41,13 @@
  * - InfluxDB integration (4 tools)
  * - Add-on Manager (13 tools)
  * - Mobile features (5 tools)
- * 
- * RESOURCES (9 + 4 templates):
+ * - Frigate NVR (5 tools)
+ * - Backup Manager (6 tools)
+ * - Music Assistant (5 tools)
+ * - Dev Tools (8 tools)
+ * - Clipboard + Config Editor + Addon Detector (4 tools)
+ *
+ * RESOURCES
  * - Live entity states by domain
  * - Automations, scripts, and scenes
  * - Area and device mappings
