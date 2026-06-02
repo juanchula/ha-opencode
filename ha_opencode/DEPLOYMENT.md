@@ -13,7 +13,7 @@
 
 ```bash
 # Clone the repo
-git clone https://github.com/magnusoverli/opencode.git
+git clone https://github.com/juanchula/ha-opencode.git
 cd opencode/ha_opencode
 
 # Build the Docker image locally

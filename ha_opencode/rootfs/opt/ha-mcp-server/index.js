@@ -24,7 +24,7 @@
  * - HA Alerts feed integration (global integration issue awareness)
  * - Visual verification via headless Chromium screenshots
  * 
- * TOOLS (98):
+ * TOOLS (100):
  * - Entity state management (get, search, history)
  * - Service calls with intelligent targeting
  * - Configuration validation and safe writing
@@ -36,15 +36,16 @@
  * - ESPHome device management, compile, and upload
  * - Visual verification screenshots of HA frontend pages
  * - HACS integration (7 tools)
- * - Grafana integration (4 tools)
- * - Node-RED integration (4 tools)
- * - InfluxDB integration (4 tools)
+ * - Grafana integration (5 tools)
+ * - Node-RED integration (5 tools)
+ * - InfluxDB integration (5 tools)
  * - Add-on Manager (13 tools)
  * - Mobile features (5 tools)
  * - Frigate NVR (5 tools)
  * - Backup Manager (6 tools)
  * - Music Assistant (5 tools)
  * - Dev Tools (8 tools)
+ * - OpenCode Manager (2 tools)
  * - Clipboard + Config Editor + Addon Detector (4 tools)
  *
  * RESOURCES
@@ -927,7 +928,7 @@ function loadLocalDeprecationPatterns() {
  * GitHub URL for the latest deprecation patterns.
  * This allows pattern updates between add-on releases.
  */
-const GITHUB_PATTERNS_URL = "https://raw.githubusercontent.com/magnusoverli/opencode/main/ha_opencode/rootfs/opt/shared/deprecation-patterns.json";
+const GITHUB_PATTERNS_URL = "https://raw.githubusercontent.com/juanchula/ha-opencode/main/ha_opencode/rootfs/opt/shared/deprecation-patterns.json";
 
 /**
  * HA Alerts JSON endpoint (public, no auth required).

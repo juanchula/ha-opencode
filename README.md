@@ -120,7 +120,7 @@ Simply run `/connect` and select **OpenCode Zen** to get started for free.
    
    Go to **Settings** → **Add-ons** → **Add-on Store** → **⋮** → **Repositories**
    
-   Add: `https://github.com/magnusoverli/opencode`
+   Add: `https://github.com/juanchula/ha-opencode`
    </details>
 
 2. **Install the add-on:**
@@ -244,8 +244,8 @@ Contributions of all kinds are welcome — feel free to open a PR!
 <table>
 <tr>
 <td align="center">
-<a href="https://github.com/magnusoverli">
-<img src="https://github.com/magnusoverli.png" width="100px;" alt="Magnus Overli"/><br />
+<a href="https://github.com/juanchula">
+<img src="https://github.com/juanchula.png" width="100px;" alt="Magnus Overli"/><br />
 <sub><b>Magnus Overli</b></sub>
 </a><br />
 <sub>Creator & Maintainer</sub>
@@ -268,7 +268,7 @@ Contributions of all kinds are welcome — feel free to open a PR!
 
 ### All Contributors
 
-See the [contributors page](https://github.com/magnusoverli/opencode/graphs/contributors) for the full list of amazing people who have helped make this project better!
+See the [contributors page](https://github.com/juanchula/ha-opencode/graphs/contributors) for the full list of amazing people who have helped make this project better!
 
 </td>
 </tr>
@@ -295,18 +295,18 @@ This is free and unencumbered software released into the public domain - see the
 <!-- Links -->
 [docs]: ./ha_opencode/DOCS.md
 [changelog]: ./ha_opencode/CHANGELOG.md
-[issues]: https://github.com/magnusoverli/opencode/issues
+[issues]: https://github.com/juanchula/ha-opencode/issues
 [license]: UNLICENSE
-[github]: https://github.com/magnusoverli/opencode
-[repo-add]: https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fmagnusoverli%2Fopencode
+[github]: https://github.com/juanchula/ha-opencode
+[repo-add]: https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fjuanchula%2Fha-opencode
 [repo-btn]: https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg
 
 <!-- Badges -->
-[version-shield]: https://img.shields.io/github/v/release/magnusoverli/opencode.svg?style=for-the-badge
+[version-shield]: https://img.shields.io/github/v/release/juanchula/ha-opencode.svg?style=for-the-badge
 [project-stage-shield]: https://img.shields.io/badge/project%20stage-experimental-orange.svg?style=for-the-badge
-[license-shield]: https://img.shields.io/github/license/magnusoverli/opencode.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/juanchula/ha-opencode.svg?style=for-the-badge
 [maintenance-shield]: https://img.shields.io/maintenance/yes/2026.svg?style=for-the-badge
-[aarch64-shield]: https://img.shields.io/github/actions/workflow/status/magnusoverli/opencode/build-aarch64.yaml?style=for-the-badge&label=aarch64
-[amd64-shield]: https://img.shields.io/github/actions/workflow/status/magnusoverli/opencode/build-amd64.yaml?style=for-the-badge&label=amd64
-[aarch64-workflow]: https://github.com/magnusoverli/opencode/actions/workflows/build-aarch64.yaml
-[amd64-workflow]: https://github.com/magnusoverli/opencode/actions/workflows/build-amd64.yaml
+[aarch64-shield]: https://img.shields.io/github/actions/workflow/status/juanchula/ha-opencode/build-aarch64.yaml?style=for-the-badge&label=aarch64
+[amd64-shield]: https://img.shields.io/github/actions/workflow/status/juanchula/ha-opencode/build-amd64.yaml?style=for-the-badge&label=amd64
+[aarch64-workflow]: https://github.com/juanchula/ha-opencode/actions/workflows/build-aarch64.yaml
+[amd64-workflow]: https://github.com/juanchula/ha-opencode/actions/workflows/build-amd64.yaml

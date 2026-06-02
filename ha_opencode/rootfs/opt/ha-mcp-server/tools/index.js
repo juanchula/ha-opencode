@@ -2119,4 +2119,52 @@ export const TOOLS = [
       message: recommendations.message,
     };
   },
+},
+{
+  name: "update_opencode",
+  title: "Update OpenCode",
+  description: "Update OpenCode AI to the latest version via npm. Takes ~30-60 seconds, restarts MCP server.",
+  annotations: { title: "update_opencode" },
+  inputSchema: { type: "object", properties: {}, required: [] },
+  execute: async () => {
+    const { updateOpenCode } = await import("../lib/opencode-manager.js");
+    return await updateOpenCode();
+  },
+},
+{
+  name: "edit_opencode_config_json",
+  title: "Edit OpenCode Config JSON",
+  description: "Read or write OpenCode's custom user config.json. Use to set providers, keybindings, themes, etc.",
+  annotations: { title: "edit_opencode_config_json" },
+  inputSchema: {
+    type: "object",
+    properties: {
+      action: {
+        type: "string",
+        description: "Action: read (get current config), write (set new config)",
+        enum: ["read", "write"],
+      },
+      config_json: {
+        type: "string",
+        description: "JSON string to write (required for write action)",
+        default: "",
+      },
+    },
+    required: ["action"],
+  },
+  execute: async (request) => {
+    const { readOpenCodeConfig, writeOpenCodeConfig } = await import("../lib/opencode-manager.js");
+    if (request.params.action === "read") {
+      return readOpenCodeConfig();
+    }
+    if (request.params.action === "write") {
+      try {
+        const config = JSON.parse(request.params.config_json);
+        return writeOpenCodeConfig(config);
+      } catch (e) {
+        return { success: false, error: "Invalid JSON: " + e.message };
+      }
+    }
+    return { success: false, error: "Unknown action" };
+  },
 }];

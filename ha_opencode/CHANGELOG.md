@@ -85,11 +85,11 @@ This release rebuilds the container to pick up significant upstream improvements
 
 ### ESPHome Error Handling
 
-- **Clear error when ESPHome tools are used without an access token** — previously produced a cryptic 500 error; now shows step-by-step setup instructions in the MCP tools, the `hab_run` gateway, and the shell ([#16](https://github.com/magnusoverli/opencode/issues/16))
+- **Clear error when ESPHome tools are used without an access token** — previously produced a cryptic 500 error; now shows step-by-step setup instructions in the MCP tools, the `hab_run` gateway, and the shell ([#16](https://github.com/juanchula/ha-opencode/issues/16))
 
 ### write_config_safe: Content Protection
 
-Addresses [#14](https://github.com/magnusoverli/opencode/issues/14) — `configuration.yaml` could be overwritten when the AI wrote only a single integration without reading the existing file.
+Addresses [#14](https://github.com/juanchula/ha-opencode/issues/14) — `configuration.yaml` could be overwritten when the AI wrote only a single integration without reading the existing file.
 
 - **Top-level key preservation** — for mapping-based YAML files (e.g. `configuration.yaml`), `write_config_safe` now blocks any write that would remove existing top-level keys
 - **Significant size reduction guard** — writes that would reduce any config file by more than 50% (by line count) are blocked
@@ -291,7 +291,7 @@ This release adds a comprehensive config validation system with multiple layers 
 
 ## 1.3.5
 
-**Bug Fix: ARM64 Baseline Binary Initialization (fixes [#7](https://github.com/magnusoverli/ha_opencode/issues/7))**
+**Bug Fix: ARM64 Baseline Binary Initialization (fixes [#7](https://github.com/juanchula/ha-opencode/issues/7))**
 
 - Fixed OpenCode failing to initialize on ARM64 devices (e.g. Home Assistant Green) when using the baseline binary
   - `OPENCODE_BIN_PATH` in `opencode-session.sh` was hardcoded to the x64 baseline path — now correctly resolves based on architecture
@@ -331,7 +331,7 @@ Inspired by work done in [okliam's fork](https://github.com/okliam). Thanks for 
 
 ## 1.1.6
 
-**Bug Fix: Multiple OpenCode Instances Spawning (fixes [#4](https://github.com/magnusoverli/ha_opencode/issues/4))**
+**Bug Fix: Multiple OpenCode Instances Spawning (fixes [#4](https://github.com/juanchula/ha-opencode/issues/4))**
 
 - Fixed container health check failing due to missing `pgrep` (added `procps` package)
 - Added `tmux` for session persistence — reconnecting now reattaches to the existing session instead of spawning a new OpenCode instance
