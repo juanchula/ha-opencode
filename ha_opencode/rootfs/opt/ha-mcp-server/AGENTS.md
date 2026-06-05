@@ -647,3 +647,27 @@ Be especially careful with these frequently-changed areas:
 2. **Present recommendations to user**
 3. Wait for user to approve specific changes
 4. Implement only the changes the user explicitly approves
+
+## Clipboard Handling
+
+**IMPORTANT**: The terminal in HA ingress (iframe) CANNOT copy text to your system clipboard. When the user asks to copy something:
+
+1. Use the `copy_to_clipboard` MCP tool with the text to copy
+2. The tool returns the text in its response
+3. INCLUDE THE TEXT in your response so the user can copy it from this chat area (which DOES work)
+
+### DO:
+```
+User: "Copy light.living_room to clipboard"
+AI: Uses copy_to_clipboard tool → displays: "Copied: light.living_room"
+```
+
+### DON'T:
+- Don't tell the user to "select the text and press Ctrl+C" (it won't work in the terminal)
+- Don't say "copied" without displaying the text
+- Always show the copied content in your response
+
+### Terminal Selection Issue
+Text selection in the terminal is intercepted and won't copy to the system clipboard.
+This is a known limitation of web terminals in HA ingress iframes.
+Always use copy_to_clipboard tool instead.

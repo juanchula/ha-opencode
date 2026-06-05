@@ -38,7 +38,14 @@ export function isValidConfigKey(key) {
   const validKeys = [
     "mcp_enabled", "lsp_enabled", "cpu_mode", "terminal_theme",
     "font_size", "cursor_style", "cursor_blink", "screenshot_enabled",
-    "access_token", "z2m_url", "z2m_mqtt_topic", "env_vars", "opencode_config",
+    "access_token", "z2m_url", "z2m_mqtt_topic",
+    "hacs_enabled", "grafana_enabled", "grafana_url",
+    "nodered_enabled", "nodered_url",
+    "influxdb_enabled", "influxdb_url",
+    "frigate_enabled", "frigate_url",
+    "music_assistant_enabled", "music_assistant_url",
+    "addon_manager_enabled", "backup_manager_enabled",
+    "env_vars", "opencode_config",
   ];
   return validKeys.includes(key);
 }

@@ -1,6 +1,6 @@
 ---
 name: "OpenCode Beta"
-description: "Beta channel for OpenCode - AI coding agent for Home Assistant. May contain experimental features."
+description: "AI coding agent for editing Home Assistant configuration with deep MCP integration and LSP support"
 version: "1.8.1b1"
 slug: "ha_opencode"
 image: "ghcr.io/juanchula/ha-opencode/{arch}"
@@ -38,19 +38,19 @@ options:
   # Feature toggles
   mcp_enabled: true
   lsp_enabled: true
-
+  
   # CPU mode: auto (detect), baseline (for older CPUs), regular (force AVX2)
   cpu_mode: "auto"
-
+  
   # Terminal appearance
   terminal_theme: "breeze"
   font_size: 14
   cursor_style: "block"
   cursor_blink: false
-
+  
   # Screenshot tool: enables visual verification of dashboards and UI changes.
   # Requires a Long-Lived Access Token (below) to authenticate with the HA frontend.
-  screenshot_enabled: true
+  screenshot_enabled: false
 
   # Long-lived access token for direct HA Core API access.
   # Required for ESPHome ingress and screenshot tool (create at: Profile → Long-Lived Access Tokens).
@@ -62,40 +62,9 @@ options:
   z2m_url: ""
   z2m_mqtt_topic: "zigbee2mqtt"
 
-  # HACS integration (optional — enables HACS status, install, search, update, remove tools)
-  hacs_enabled: false
-
-  # Grafana integration (optional — enables dashboard and datasource queries)
-  grafana_enabled: false
-  grafana_url: ""
-
-  # Node-RED integration (optional — enables flow and node management)
-  nodered_enabled: false
-  nodered_url: ""
-
-  # InfluxDB integration (optional — enables time-series queries)
-  influxdb_enabled: false
-  influxdb_url: ""
-  influxdb_org: "homeassistant"
-  influxdb_bucket: "homeassistant"
-
-  # Addon Manager (optional — enables Supervisor addon management)
-  addon_manager_enabled: false
-
-  # Frigate NVR integration (optional — enables camera and event queries)
-  frigate_enabled: false
-  frigate_url: ""
-
-  # Backup Manager (optional — enables HA backup create/restore/list)
-  backup_manager_enabled: true
-
-  # Music Assistant integration (optional — enables player and media control)
-  music_assistant_enabled: false
-  music_assistant_url: ""
-
   # Environment variables to inject into the container
   env_vars: []
-
+  
   # Advanced: custom OpenCode configuration (JSON)
   opencode_config: ""
 
@@ -103,10 +72,10 @@ schema:
   # Feature toggles
   mcp_enabled: bool
   lsp_enabled: bool
-
+  
   # CPU mode
   cpu_mode: list(auto|baseline|regular)
-
+  
   # Terminal appearance
   terminal_theme: list(breeze|catppuccin_mocha|catppuccin_latte|dracula|nord|tokyo_night|one_dark|solarized_dark|solarized_light|gruvbox_dark)
   font_size: int(10,24)
@@ -118,12 +87,16 @@ schema:
 
   # HA Core access token
   access_token: str?
-
+  
   # Zigbee2MQTT (optional)
   z2m_url: str?
   z2m_mqtt_topic: str?
 
-  # HACS integration
+  # Environment variables
+  screenshot_enabled: bool
+  access_token: str?
+  z2m_url: str?
+  z2m_mqtt_topic: str?
   hacs_enabled: bool
   grafana_enabled: bool
   grafana_url: str?
@@ -131,25 +104,15 @@ schema:
   nodered_url: str?
   influxdb_enabled: bool
   influxdb_url: str?
-  influxdb_org: str?
-  influxdb_bucket: str?
-  addon_manager_enabled: bool
   frigate_enabled: bool
   frigate_url: str?
-  backup_manager_enabled: bool
   music_assistant_enabled: bool
   music_assistant_url: str?
-
-  # Environment variables
+  addon_manager_enabled: bool
+  backup_manager_enabled: bool
   env_vars:
     - name: str
-  - name: TEST_VAR_XYZ
-  - name: TEST_VAR_XYZ
-    value: test_value_xyz
-    value: test_value_xyz
       value: str
-
-  # Advanced
   opencode_config: str?
 
 # Exclude caches from backups
